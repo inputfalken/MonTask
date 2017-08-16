@@ -15,7 +15,7 @@ namespace Tests {
         private const string FlatMapText = "World";
 
         [Test]
-        public async Task String_Task_Generic_Task_Selector() {
+        public async Task String_Task_Flatmap_String_Task() {
             var flatMapRes = await GetString().SelectMany(async s => {
                 await Task.Delay(100);
                 return s + FlatMapText;
