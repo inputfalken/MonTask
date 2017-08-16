@@ -8,67 +8,43 @@ namespace Tests {
     internal class SelectManyTests {
         private const string Text = "Hello";
 
-        private static async Task<string> GetString() {
+        private static Task<string> GenericTask => Task.Run(async () => {
             await Task.Delay(100);
             return Text;
-        }
+        });
 
-        private const string FlatMapText = "World";
+        private static Task VoidTask => Task.Delay(100);
+
 
         [Test]
         public async Task String_Task_FlatMap_String_Task() {
-            var flatMapRes = await GetString().SelectMany(async s => {
+            var flatMapRes = await GenericTask.SelectMany(async s => {
                 await Task.Delay(100);
-                return s + FlatMapText;
+                return s + "World";
             });
-            Assert.AreEqual(Text + FlatMapText, flatMapRes);
+            Assert.AreEqual("HelloWorld", flatMapRes);
         }
 
         [Test]
         public async Task String_Task_FlatMap_String_Task_With_ResultSelector() {
-            var flatMapRes = await GetString()
+            var flatMapRes = await GenericTask
                 .SelectMany(async s => {
-                    await Task.Delay(100);
-                    return s + FlatMapText;
+                    await VoidTask;
+                    return s + "World";
                 }, (s, s1) => s + s1);
-            Assert.AreEqual(Text + Text + FlatMapText, flatMapRes);
+            Assert.AreEqual("HelloHelloWorld", flatMapRes);
         }
 
         [Test]
         public async Task String_Task_FlatMap_Void_Task() {
-            var isFlatMapped = false;
-            var flatmap = GetString()
-                .SelectMany(s => Task.Delay(100))
-                .ContinueWith(task => isFlatMapped = true);
-            Assert.IsFalse(isFlatMapped);
-            await flatmap;
-            Assert.IsTrue(isFlatMapped);
         }
 
         [Test]
         public async Task Void_Task_FlatMap_String_Task() {
-            var isFlatMapped = false;
-            var flatmap = Task.Delay(100)
-                .SelectMany(GetString)
-                .ContinueWith(task => {
-                    isFlatMapped = true;
-                    task.Wait();
-                    return task.Result;
-                });
-            Assert.IsFalse(isFlatMapped);
-            Assert.AreEqual(Text, await flatmap);
-            Assert.IsTrue(isFlatMapped);
         }
 
         [Test]
         public async Task Void_Task_FlatMap_Void_Task() {
-            var isFlatmapped = false;
-            var flatmap = Task.Delay(100)
-                .SelectMany(() => Task.Delay(100))
-                .ContinueWith(task => isFlatmapped = true);
-            Assert.IsFalse(isFlatmapped);
-            await flatmap;
-            Assert.IsTrue(isFlatmapped);
         }
     }
 }
