@@ -1,8 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using MonTask;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 
 // TODO make tests simpler
 namespace Tests {
