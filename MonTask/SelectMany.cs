@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MonTask {
@@ -31,10 +32,8 @@ namespace MonTask {
             if (task == null) throw new ArgumentNullException(nameof(task));
             if (selector == null) throw new ArgumentNullException(nameof(selector));
             await task.ConfigureAwait(false);
-            var ttask = await selector().ConfigureAwait(false);
-            return resultSelector(ttask);
+            return resultSelector(await selector().ConfigureAwait(false));
         }
-
 
         public static async Task SelectMany<TSource>(this Task<TSource> task, Func<TSource, Task> fn) {
             if (task == null) throw new ArgumentNullException(nameof(task));
@@ -42,15 +41,13 @@ namespace MonTask {
             await fn(await task.ConfigureAwait(false)).ConfigureAwait(false);
         }
 
-
         public static async Task<TResult> SelectMany<TSource, TTask, TResult>(this Task<TSource> task,
             Func<TSource, Task<TTask>> selector, Func<TSource, TTask, TResult> resultSelector) {
             if (task == null) throw new ArgumentNullException(nameof(task));
             if (selector == null) throw new ArgumentNullException(nameof(selector));
             if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
             var source = await task.ConfigureAwait(false);
-            var ttask = await selector(source).ConfigureAwait(false);
-            return resultSelector(source, ttask);
+            return resultSelector(source, await selector(source).ConfigureAwait(false));
         }
 
         public static async Task<TResult> SelectMany<TSource, TResult>(this Task<TSource> task,
