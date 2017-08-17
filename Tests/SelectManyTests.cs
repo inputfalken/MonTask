@@ -2,7 +2,6 @@
 using MonTask;
 using NUnit.Framework;
 
-// TODO make tests simpler
 namespace Tests {
     [TestFixture]
     internal class SelectManyTests {
