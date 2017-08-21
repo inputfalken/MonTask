@@ -26,68 +26,68 @@ namespace Tests {
 
         [Test]
         public async Task String_Task_FlatMap_String_Task() {
-            var flatMapRes = await StringTask.SelectMany(async s => {
+            var flatMapped = await StringTask.SelectMany(async s => {
                 await Task.Delay(100);
                 return s + "World";
             });
-            Assert.AreEqual("HelloWorld", flatMapRes);
+            Assert.AreEqual("HelloWorld", flatMapped);
         }
 
         [Test]
         public async Task String_Task_FlatMap_String_Task_With_ResultSelector() {
-            var flatMapRes = await StringTask
+            var flatMapped = await StringTask
                 .SelectMany(async s => {
                     await VoidTask;
                     return s + "World";
                 }, (s, s1) => s + s1);
-            Assert.AreEqual("HelloHelloWorld", flatMapRes);
+            Assert.AreEqual("HelloHelloWorld", flatMapped);
         }
 
         [Test]
         public async Task String_Task_FlatMap_Void_Task() {
-            var flatmaped = StringTask.SelectMany(s => VoidTask);
+            var flatMapped = StringTask.SelectMany(s => VoidTask);
             Assert.AreEqual(0, _flatMapCounter);
-            await flatmaped;
+            await flatMapped;
             Assert.AreEqual(1, _flatMapCounter);
         }
 
         [Test]
         public async Task String_Task_FlatMap_Void_Task_With_ResultSelector() {
-            var flatmaped = StringTask.SelectMany(s => VoidTask, s => s + 1);
+            var flatMapped = StringTask.SelectMany(s => VoidTask, s => s + 1);
             Assert.AreEqual(0, _flatMapCounter);
-            Assert.AreEqual("Hello1", await flatmaped);
+            Assert.AreEqual("Hello1", await flatMapped);
             Assert.AreEqual(1, _flatMapCounter);
         }
 
         [Test]
         public async Task Void_Task_FlatMap_String_Task() {
-            var flatmap = VoidTask.SelectMany(() => StringTask);
+            var flatMapped = VoidTask.SelectMany(() => StringTask);
             Assert.AreEqual(0, _flatMapCounter);
-            Assert.AreEqual("Hello", await flatmap);
+            Assert.AreEqual("Hello", await flatMapped);
             Assert.AreEqual(1, _flatMapCounter);
         }
 
         [Test]
         public async Task Void_Task_FlatMap_String_Task_Using_ResultSelector() {
-            var flatmap = VoidTask.SelectMany(() => StringTask, s => s + 1);
+            var flatMapped = VoidTask.SelectMany(() => StringTask, s => s + 1);
             Assert.AreEqual(0, _flatMapCounter);
-            Assert.AreEqual("Hello1", await flatmap);
+            Assert.AreEqual("Hello1", await flatMapped);
             Assert.AreEqual(1, _flatMapCounter);
         }
 
         [Test]
         public async Task Void_Task_FlatMap_Void_Task() {
-            var flatMap = VoidTask.SelectMany(() => VoidTask);
+            var flatMapped = VoidTask.SelectMany(() => VoidTask);
             Assert.AreEqual(0, _flatMapCounter);
-            await flatMap;
+            await flatMapped;
             Assert.AreEqual(2, _flatMapCounter);
         }
 
         [Test]
         public async Task Void_Task_FlatMap_Void_Task_Using_ResultSelector() {
-            var flatMap = VoidTask.SelectMany(() => VoidTask, () => "Hello");
+            var flatMapped = VoidTask.SelectMany(() => VoidTask, () => "Hello");
             Assert.AreEqual(0, _flatMapCounter);
-            Assert.AreEqual("Hello", await flatMap);
+            Assert.AreEqual("Hello", await flatMapped);
             Assert.AreEqual(2, _flatMapCounter);
         }
     }
