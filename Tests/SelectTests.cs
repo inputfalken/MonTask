@@ -8,14 +8,14 @@ namespace Tests {
     internal class SelectTests {
         private const string Text = "hello";
 
-        private static async Task<string> GetString() {
+        private static Task<string> StringTask => Task.Run(async () => {
             await Task.Delay(100);
             return Text;
-        }
+        });
 
         [Test]
         public async Task Transform_String_Task_To_Length() {
-            var length = await GetString().Select(s => s.Length);
+            var length = await StringTask.Select(s => s.Length);
             Assert.AreEqual(Text.Length, length);
         }
 
@@ -28,7 +28,7 @@ namespace Tests {
         [Test]
         public void String_Task_Null_Selector() {
             Func<string, int> selector = null;
-            Assert.ThrowsAsync<ArgumentNullException>(() => GetString().Select(selector));
+            Assert.ThrowsAsync<ArgumentNullException>(() => StringTask.Select(selector));
         }
 
         [Test]
