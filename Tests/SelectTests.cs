@@ -10,7 +10,7 @@ namespace Tests {
 
         private static async Task<string> GetString() {
             await Task.Delay(100);
-            return await Task.Run(() => Text);
+            return Text;
         }
 
         [Test]
