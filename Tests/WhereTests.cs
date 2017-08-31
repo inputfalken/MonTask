@@ -37,5 +37,33 @@ namespace Tests {
             Func<string, bool> predicate = null;
             Assert.ThrowsAsync<ArgumentNullException>(() => StringTask.Where(predicate));
         }
+
+        [Test]
+        public async Task Catch_Exception() {
+            var select = StringTask.Where(s => {
+                throw new Exception("Exception");
+                return true;
+            });
+            try {
+                await select;
+            }
+            catch (Exception e) {
+                Assert.AreEqual("Exception", e.Message);
+            }
+        }
+        [Test]
+        public async Task Task_Run_Catch_Exception() {
+            var select = StringTask.Where(s => {
+                throw new Exception("Exception");
+                return true;
+            });
+            var task = Task.Run(() => @select);
+            try {
+                await task;
+            }
+            catch (Exception e) {
+                Assert.AreEqual("Exception", e.Message);
+            }
+        }
     }
 }

@@ -38,7 +38,6 @@ namespace Tests {
             Assert.ThrowsAsync<ArgumentNullException>(() => task.Select(selector));
         }
 
-
         [Test]
         public void Null_String_Task() {
             Task<string> task = null;
@@ -49,6 +48,35 @@ namespace Tests {
         public void Null_Task() {
             Task task = null;
             Assert.ThrowsAsync<ArgumentNullException>(() => task.Select(() => Text));
+        }
+
+        [Test]
+        public async Task Catch_Exception() {
+            var select = StringTask.Select(s => {
+                throw new Exception("Exception");
+                return s;
+            });
+            try {
+                await select;
+            }
+            catch (Exception e) {
+                Assert.AreEqual("Exception", e.Message);
+            }
+        }
+
+        [Test]
+        public async Task Task_Run_Catch_Exception() {
+            var select = StringTask.Select(s => {
+                throw new Exception("Exception");
+                return s;
+            });
+            var task = Task.Run(() => @select);
+            try {
+                await task;
+            }
+            catch (Exception e) {
+                Assert.AreEqual("Exception", e.Message);
+            }
         }
     }
 }

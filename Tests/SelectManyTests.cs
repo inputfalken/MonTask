@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using MonTask;
 using NUnit.Framework;
 
@@ -89,6 +90,35 @@ namespace Tests {
             Assert.AreEqual(0, _flatMapCounter);
             Assert.AreEqual("Hello", await flatMapped);
             Assert.AreEqual(2, _flatMapCounter);
+        }
+
+        [Test]
+        public async Task Catch_Exception() {
+            var select = StringTask.SelectMany(s => {
+                throw new Exception("Exception");
+                return VoidTask;
+            });
+            try {
+                await select;
+            }
+            catch (Exception e) {
+                Assert.AreEqual("Exception", e.Message);
+            }
+        }
+
+        [Test]
+        public async Task Task_Run_Catch_Exception() {
+            var select = StringTask.SelectMany(s => {
+                throw new Exception("Exception");
+                return VoidTask;
+            });
+            var task = Task.Run(() => select);
+            try {
+                await task;
+            }
+            catch (Exception e) {
+                Assert.AreEqual("Exception", e.Message);
+            }
         }
     }
 }
