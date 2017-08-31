@@ -94,10 +94,7 @@ namespace Tests {
 
         [Test]
         public async Task Catch_Exception() {
-            var select = StringTask.SelectMany(s => {
-                throw new Exception("Exception");
-                return VoidTask;
-            });
+            var select = StringTask.SelectMany(s => throw new Exception("Exception"));
             try {
                 await select;
             }
@@ -108,10 +105,7 @@ namespace Tests {
 
         [Test]
         public async Task Task_Run_Catch_Exception() {
-            var select = StringTask.SelectMany(s => {
-                throw new Exception("Exception");
-                return VoidTask;
-            });
+            var select = StringTask.SelectMany<string, int>(s => throw new Exception("Exception"));
             var task = Task.Run(() => select);
             try {
                 await task;

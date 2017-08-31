@@ -40,10 +40,7 @@ namespace Tests {
 
         [Test]
         public async Task Catch_Exception() {
-            var select = StringTask.Where(s => {
-                throw new Exception("Exception");
-                return true;
-            });
+            var select = StringTask.Where(s => throw new Exception("Exception"));
             try {
                 await select;
             }
@@ -53,10 +50,7 @@ namespace Tests {
         }
         [Test]
         public async Task Task_Run_Catch_Exception() {
-            var select = StringTask.Where(s => {
-                throw new Exception("Exception");
-                return true;
-            });
+            var select = StringTask.Where(s => throw new Exception("Exception"));
             var task = Task.Run(() => @select);
             try {
                 await task;
