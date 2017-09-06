@@ -25,4 +25,4 @@ on_finish :
   # any cleaup in here
 deploy_script:
   - ps: Invoke-WebRequest -Uri https://raw.githubusercontent.com/inputfalken/Sharpy/development/deployment.ps1 -OutFile deploy.ps1
-  - ps: .\deploy.ps1  -Project .\MonTask\MonTask.csproj
+  - ps: .\deploy.ps1  -Project .\MonTask\MonTask.csproj -Repo 'https://github.com/inputfalken/MonTask' -Deploy $false -UseDocfx $false
