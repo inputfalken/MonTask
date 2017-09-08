@@ -3,7 +3,7 @@
 ## What is it? ##
 A library which extends `System.Task` with fluent syntax using LINQ convention.
 
-## Example ## 
+## Examples ## 
 ### Map Generic Tasks ###
 ```csharp
 using System;
@@ -58,9 +58,9 @@ namespace Example {
 
     public static void Main(string[] args) {
       // Using map with a task will nest the task.
-      Task<Task> select = ExampleAsync().Select(str => ExampleAsync());
+      Task<Task> select = ExampleAsync().Select(() => ExampleAsync());
       // Using flatmap will not nest the task.
-      Task selectMany = ExampleAsync().SelectMany(str => ExampleAsync());
+      Task selectMany = ExampleAsync().SelectMany(() => ExampleAsync());
     }
 
     public static Task ExampleAsync() {
