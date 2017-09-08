@@ -3,7 +3,7 @@
 ## What is it? ##
 A library which extends `System.Task` with fluent syntax using LINQ convention.
 
-## Example ## 
+## Examples ## 
 ### Map Generic Tasks ###
 ```csharp
 using System;
