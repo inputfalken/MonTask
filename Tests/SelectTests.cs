@@ -14,15 +14,26 @@ namespace Tests {
         });
 
         [Test]
-        public async Task Transform_String_Task_To_Length() {
-            var length = await StringTask.Select(s => s.Length);
-            Assert.AreEqual(Text.Length, length);
+        public async Task Catch_Exception() {
+            var select = StringTask.Select<string, int>(s => throw new Exception("Exception"));
+            try {
+                await select;
+            }
+            catch (Exception e) {
+                Assert.AreEqual("Exception", e.Message);
+            }
         }
 
         [Test]
-        public async Task Transform_Void_Task_To_String_Task() {
-            var text = await Task.Delay(100).Select(() => Text);
-            Assert.AreEqual(Text, text);
+        public void Null_String_Task() {
+            Task<string> task = null;
+            Assert.ThrowsAsync<ArgumentNullException>(() => task.Select(s => s.Length));
+        }
+
+        [Test]
+        public void Null_Task() {
+            Task task = null;
+            Assert.ThrowsAsync<ArgumentNullException>(() => task.Select(() => Text));
         }
 
         [Test]
@@ -39,29 +50,6 @@ namespace Tests {
         }
 
         [Test]
-        public void Null_String_Task() {
-            Task<string> task = null;
-            Assert.ThrowsAsync<ArgumentNullException>(() => task.Select(s => s.Length));
-        }
-
-        [Test]
-        public void Null_Task() {
-            Task task = null;
-            Assert.ThrowsAsync<ArgumentNullException>(() => task.Select(() => Text));
-        }
-
-        [Test]
-        public async Task Catch_Exception() {
-            var select = StringTask.Select<string, int>(s => throw new Exception("Exception"));
-            try {
-                await select;
-            }
-            catch (Exception e) {
-                Assert.AreEqual("Exception", e.Message);
-            }
-        }
-
-        [Test]
         public async Task Task_Run_Catch_Exception() {
             var select = StringTask.Select<string, int>(s => throw new Exception("Exception"));
             var task = Task.Run(() => select);
@@ -71,6 +59,18 @@ namespace Tests {
             catch (Exception e) {
                 Assert.AreEqual("Exception", e.Message);
             }
+        }
+
+        [Test]
+        public async Task Transform_String_Task_To_Length() {
+            var length = await StringTask.Select(s => s.Length);
+            Assert.AreEqual(Text.Length, length);
+        }
+
+        [Test]
+        public async Task Transform_Void_Task_To_String_Task() {
+            var text = await Task.Delay(100).Select(() => Text);
+            Assert.AreEqual(Text, text);
         }
     }
 }

@@ -6,6 +6,11 @@ using NUnit.Framework;
 namespace Tests {
     [TestFixture]
     internal class SelectManyTests {
+        [TearDown]
+        public void Reset() {
+            _flatMapCounter = 0;
+        }
+
         private const string Text = "Hello";
 
         private static Task<string> StringTask => Task.Run(async () => {
@@ -15,15 +20,32 @@ namespace Tests {
 
         private int _flatMapCounter;
 
-        [TearDown]
-        public void Reset() {
-            _flatMapCounter = 0;
-        }
-
         private Task VoidTask => Task.Run(async () => {
             await Task.Delay(100);
             _flatMapCounter++;
         });
+
+        [Test]
+        public async Task String_Task_Catch_Exception() {
+            var select = StringTask.SelectMany(s => throw new Exception("Exception"));
+            try {
+                await select;
+            }
+            catch (Exception e) {
+                Assert.AreEqual("Exception", e.Message);
+            }
+        }
+
+        [Test]
+        public async Task String_Task_Catch_Exception_With_ResultSelector() {
+            var select = StringTask.SelectMany(s => throw new Exception("Exception"), s => s.Length);
+            try {
+                await select;
+            }
+            catch (Exception e) {
+                Assert.AreEqual("Exception", e.Message);
+            }
+        }
 
         [Test]
         public async Task String_Task_FlatMap_String_Task() {
@@ -61,6 +83,52 @@ namespace Tests {
         }
 
         [Test]
+        public async Task String_Task_Run_Catch_Exception() {
+            var select = StringTask.SelectMany<string, int>(s => throw new Exception("Exception"));
+            var task = Task.Run(() => select);
+            try {
+                await task;
+            }
+            catch (Exception e) {
+                Assert.AreEqual("Exception", e.Message);
+            }
+        }
+
+        [Test]
+        public async Task String_Task_Run_Catch_Exception_With_ResultSelector() {
+            var select = StringTask.SelectMany(s => throw new Exception("Exception"), s => s.Length);
+            var task = Task.Run(() => select);
+            try {
+                await task;
+            }
+            catch (Exception e) {
+                Assert.AreEqual("Exception", e.Message);
+            }
+        }
+
+        [Test]
+        public async Task Void_Task_Catch_Exception() {
+            var select = VoidTask.SelectMany(() => throw new Exception("Exception"));
+            try {
+                await select;
+            }
+            catch (Exception e) {
+                Assert.AreEqual("Exception", e.Message);
+            }
+        }
+
+        [Test]
+        public async Task Void_Task_Catch_Exception_With_ResultSelector() {
+            var select = VoidTask.SelectMany(() => throw new Exception("Exception"), () => 5);
+            try {
+                await select;
+            }
+            catch (Exception e) {
+                Assert.AreEqual("Exception", e.Message);
+            }
+        }
+
+        [Test]
         public async Task Void_Task_FlatMap_String_Task() {
             var flatMapped = VoidTask.SelectMany(() => StringTask);
             Assert.AreEqual(0, _flatMapCounter);
@@ -93,79 +161,11 @@ namespace Tests {
         }
 
         [Test]
-        public async Task String_Task_Catch_Exception() {
-            var select = StringTask.SelectMany(s => throw new Exception("Exception"));
-            try {
-                await select;
-            }
-            catch (Exception e) {
-                Assert.AreEqual("Exception", e.Message);
-            }
-        }
-
-        [Test]
-        public async Task String_Task_Run_Catch_Exception() {
-            var select = StringTask.SelectMany<string, int>(s => throw new Exception("Exception"));
-            var task = Task.Run(() => select);
-            try {
-                await task;
-            }
-            catch (Exception e) {
-                Assert.AreEqual("Exception", e.Message);
-            }
-        }
-
-        [Test]
-        public async Task Void_Task_Catch_Exception() {
-            var select = VoidTask.SelectMany(() => throw new Exception("Exception"));
-            try {
-                await select;
-            }
-            catch (Exception e) {
-                Assert.AreEqual("Exception", e.Message);
-            }
-        }
-
-        [Test]
         public async Task Void_Task_Run_Catch_Exception() {
             var select = VoidTask.SelectMany(() => throw new Exception("Exception"));
             var task = Task.Run(() => select);
             try {
                 await task;
-            }
-            catch (Exception e) {
-                Assert.AreEqual("Exception", e.Message);
-            }
-        }
-
-        [Test]
-        public async Task String_Task_Catch_Exception_With_ResultSelector() {
-            var select = StringTask.SelectMany(s => throw new Exception("Exception"), s => s.Length);
-            try {
-                await select;
-            }
-            catch (Exception e) {
-                Assert.AreEqual("Exception", e.Message);
-            }
-        }
-
-        [Test]
-        public async Task String_Task_Run_Catch_Exception_With_ResultSelector() {
-            var select = StringTask.SelectMany(s => throw new Exception("Exception"), s => s.Length);
-            var task = Task.Run(() => select);
-            try {
-                await task;
-            }
-            catch (Exception e) {
-                Assert.AreEqual("Exception", e.Message);
-            }
-        }
-
-        [Test]
-        public async Task Void_Task_Catch_Exception_With_ResultSelector() {
-            var select = VoidTask.SelectMany(() => throw new Exception("Exception"), () => 5);
-            try {
-                await select;
             }
             catch (Exception e) {
                 Assert.AreEqual("Exception", e.Message);
