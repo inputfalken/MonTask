@@ -5,10 +5,10 @@
     <Authors>Robert Andersson</Authors>
     <Company />
     <Description>Write LINQ with tasks.</Description>
-    <VersionPrefix>0.2.0</VersionPrefix>
+    <VersionPrefix>0.2.1</VersionPrefix>
     <PackageProjectUrl>https://github.com/inputfalken/MonTask/tree/master</PackageProjectUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/inputfalken/MonTask/master/License.txt</PackageLicenseUrl>
-    <FileVersion>0.2.0.0</FileVersion>
+    <FileVersion>0.2.1.0</FileVersion>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/inputfalken/MonTask/tree/master</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
